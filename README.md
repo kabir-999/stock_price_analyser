@@ -2,7 +2,7 @@
 
 A robust data pipeline that extracts, transforms, and analyzes stock market data using Apache Airflow. This project fetches real-time stock data, processes it to generate technical indicators, and provides trading alerts based on market conditions.
 
-## 📊 Features
+##Features
 
 ### 1. Data Extraction
 - **Multi-Stock Support**: Fetches data for multiple tickers (AAPL, MSFT, TSLA by default)
@@ -25,16 +25,16 @@ A robust data pipeline that extracts, transforms, and analyzes stock market data
 Automated detection of key market conditions:
 
 #### RSI-Based Alerts
-- 🚨 Overbought: RSI > 70
-- 📉 Oversold: RSI < 30
+- Overbought: RSI > 70
+- Oversold: RSI < 30
 
 #### MACD Signals
-- 📈 Bullish: MACD crosses above Signal Line
-- 📉 Bearish: MACD crosses below Signal Line
+- Bullish: MACD crosses above Signal Line
+- Bearish: MACD crosses below Signal Line
 
 #### Moving Average Crossovers
-- 🟢 Buy Signal: Price crosses above 5-day MA
-- 🔴 Sell Signal: Price crosses below 5-day MA
+- Buy Signal: Price crosses above 5-day MA
+- Sell Signal: Price crosses below 5-day MA
 
 ### 4. Data Output
 - **Raw Data**: Original market data from Yahoo Finance
