@@ -61,31 +61,6 @@ Processed data includes the following columns:
 - **Data Source**: Yahoo Finance API (via yfinance)
 - **Scheduling**: Daily execution with configurable intervals
 
-## 📈 Use Cases
-- Quantitative trading strategy development
-- Technical analysis automation
-- Market trend monitoring
-- Educational purposes for learning algorithmic trading
-
-## 📂 Project Structure
-```
-stock-price-etl/
-├── dags/
-│   └── stock_etl.py       # Main DAG definition
-├── data/
-│   ├── raw_*.csv         # Raw stock data
-│   └── transformed_*.csv  # Processed data with indicators
-└── README.md             # This file
-```
-
-## 🏗 Architecture
-<img src="https://raw.githubusercontent.com/kabir-999/stocl_price_analysis_ETL/main/architecture_diagram.png" width="600">
-
-*Data flows from Yahoo Finance through our ETL pipeline to generate actionable trading insights.*
-
-## 🔄 Workflow
-<img src="https://raw.githubusercontent.com/kabir-999/stocl_price_analysis_ETL/main/workflow_diagram.png" width="600">
-
 *The pipeline automates data extraction, processing, and alerting on a daily schedule.*
 
 1. **Extract**: Fetch latest stock data
@@ -93,5 +68,3 @@ stock-price-etl/
 3. **Analyze**: Generate trading signals
 4. **Alert**: Notify about significant market conditions
 
----
-*Note: This is a data processing pipeline. For production use, consider adding proper error handling, monitoring, and alerting mechanisms.*
