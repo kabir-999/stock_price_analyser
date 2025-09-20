@@ -78,7 +78,14 @@ stock-price-etl/
 └── README.md             # This file
 ```
 
+## 🏗 Architecture
+![Architecture Diagram](https://github.com/kabir-999/stocl_price_analysis_ETL/assets/155754322/4c0a4e70-6b2c-4e1b-8f6b-f4c6e4a7d0f9)
+*Data flows from Yahoo Finance through our ETL pipeline to generate actionable trading insights.*
+
 ## 🔄 Workflow
+![Workflow Diagram](https://github.com/kabir-999/stocl_price_analysis_ETL/assets/155754322/9e7f1c7c-6a3e-4b8e-9c7e-6a0a2b3d4e5f)
+*The pipeline automates data extraction, processing, and alerting on a daily schedule.*
+
 1. **Extract**: Fetch latest stock data
 2. **Transform**: Calculate technical indicators
 3. **Analyze**: Generate trading signals
