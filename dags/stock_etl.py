@@ -154,4 +154,86 @@ with DAG(
         python_callable=transform_stock_data,
     )
 
-    extract_task >> transform_task
+    def check_trading_signals(**kwargs):
+        """
+        Check trading signals based on technical indicators and send alerts.
+        """
+        ti = kwargs["ti"]
+        tickers = ti.xcom_pull(task_ids="extract_stock_data")
+        
+        alerts = []
+        
+        for ticker in tickers:
+            try:
+                file_path = os.path.join(DATA_DIR, f"transformed_{ticker}_data.csv")
+                df = pd.read_csv(file_path, index_col=0, parse_dates=True)
+                
+                # Get the latest data point
+                latest = df.iloc[-1]
+                
+                # RSI Conditions
+                if 'RSI' in df.columns and pd.notna(latest['RSI']):
+                    rsi = float(latest['RSI'])
+                    if rsi > 70:
+                        alerts.append(f"🚨 {ticker}: RSI {rsi:.2f} - Overbought condition!")
+                    elif rsi < 30:
+                        alerts.append(f"📉 {ticker}: RSI {rsi:.2f} - Oversold condition!")
+                
+                # MACD Crossover
+                if 'MACD' in df.columns and 'Signal_Line' in df.columns:
+                    if len(df) >= 2:
+                        prev_macd = df['MACD'].iloc[-2]
+                        curr_macd = df['MACD'].iloc[-1]
+                        prev_signal = df['Signal_Line'].iloc[-2]
+                        curr_signal = df['Signal_Line'].iloc[-1]
+                        
+                        # Bullish crossover
+                        if prev_macd < prev_signal and curr_macd > curr_signal:
+                            alerts.append(f"📈 {ticker}: Bullish MACD Crossover detected!")
+                        # Bearish crossover
+                        elif prev_macd > prev_signal and curr_macd < curr_signal:
+                            alerts.append(f"📉 {ticker}: Bearish MACD Crossover detected!")
+                
+                # Price crossing moving averages
+                if 'Close' in df.columns and 'MA_5' in df.columns and 'MA_20' in df.columns:
+                    if len(df) >= 2:
+                        prev_close = df['Close'].iloc[-2]
+                        curr_close = df['Close'].iloc[-1]
+                        prev_ma5 = df['MA_5'].iloc[-2]
+                        curr_ma5 = df['MA_5'].iloc[-1]
+                        
+                        # Price crossing above MA5
+                        if prev_close < prev_ma5 and curr_close > curr_ma5:
+                            alerts.append(f"🟢 {ticker}: Price crossed above 5-day MA")
+                        # Price crossing below MA5
+                        elif prev_close > prev_ma5 and curr_close < curr_ma5:
+                            alerts.append(f"🔴 {ticker}: Price crossed below 5-day MA")
+                
+            except Exception as e:
+                print(f"Error processing alerts for {ticker}: {str(e)}")
+        
+        # Print alerts to logs
+        if alerts:
+            print("\n" + "="*50)
+            print("📊 TRADING ALERTS 📊")
+            print("="*50)
+            for alert in alerts:
+                print(alert)
+                
+            # In a production environment, you would add code here to send emails/slack/etc.
+            # Example for email (uncomment and configure in Airflow):
+            # from airflow.utils.email import send_email
+            # send_email(
+            #     to="your_email@example.com",
+            #     subject=f"Trading Alerts - {datetime.now().strftime('%Y-%m-%d')}",
+            #     html_content="<br>\n".join(alerts)
+            # )
+            print("="*50 + "\n")
+    
+    # Add the alert task to the DAG
+    alert_task = PythonOperator(
+        task_id="check_trading_signals",
+        python_callable=check_trading_signals,
+    )
+
+    extract_task >> transform_task >> alert_task
